@@ -1,0 +1,29 @@
+{
+  "name": "@aios/phoenix",
+  "version": "0.1.0",
+  "description": "Control-plane API server and operator portal for AI-Stack / AIOS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "aios-phoenix": "dist/main.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "node --watch dist/main.js",
+    "start": "node dist/main.js",
+    "test": "node --test dist/**/*.test.js",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aios/atlas": "*",
+    "@aios/governance": "*",
+    "@aios/mcp": "*",
+    "@aios/prometheus": "*",
+    "@aios/voice": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "@types/node": "^20.12.12"
+  }
+}

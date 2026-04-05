@@ -1,0 +1,21 @@
+{
+  "name": "@aios/mcp",
+  "version": "0.1.0",
+  "description": "MCP (Model Context Protocol) tool execution engine for AI-Stack / AIOS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc -p tsconfig.test.json && node --test dist/**/*.test.js",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "@types/node": "^20.12.12"
+  }
+}
