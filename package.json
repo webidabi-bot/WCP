@@ -1,0 +1,25 @@
+{
+  "name": "aios",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-Stack / AIOS — Self-hosted modular AI operating system",
+  "workspaces": [
+    "packages/*",
+    "portal"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=packages/governance && npm run build --workspace=packages/atlas && npm run build --workspace=packages/mcp && npm run build --workspace=packages/prometheus && npm run build --workspace=packages/voice && npm run build --workspace=packages/phoenix && npm run build --workspace=portal",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "dev": "npm run dev --workspace=packages/phoenix",
+    "migrate": "npm run migrate --workspace=packages/governance",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "@types/node": "^20.12.12"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
