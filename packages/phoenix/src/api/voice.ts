@@ -21,9 +21,9 @@ export function registerVoiceRoutes(router: Router): void {
   router.post("/api/voice/sessions", (ctx) => {
     const body = ctx.body as Record<string, unknown> | null;
     const session = orchestrator.createSession({
-      agentId: body?.agentId != null ? String(body.agentId) : undefined,
-      sessionId: body?.sessionId != null ? String(body.sessionId) : undefined,
-      language: body?.language != null ? String(body.language) : undefined,
+      agentId: body?.["agentId"] != null ? String(body["agentId"]) : undefined,
+      sessionId: body?.["sessionId"] != null ? String(body["sessionId"]) : undefined,
+      language: body?.["language"] != null ? String(body["language"]) : undefined,
     });
     json(ctx.res, { session }, 201);
   });
@@ -48,17 +48,22 @@ export function registerVoiceRoutes(router: Router): void {
     if (!session) return notFound(ctx.res);
 
     const body = ctx.body as Record<string, unknown> | null;
-    if (!body?.audio) {
+    if (!body?.["audio"]) {
       json(ctx.res, { error: "'audio' (base64) is required" }, 400);
       return;
     }
 
-    const result = await orchestrator.transcribe(
-      ctx.params["id"]!,
-      String(body.audio),
-      { language: body.language != null ? String(body.language) : undefined }
-    );
-    json(ctx.res, { result });
+    try {
+      const result = await orchestrator.transcribe(
+        ctx.params["id"]!,
+        String(body["audio"]),
+        { language: body["language"] != null ? String(body["language"]) : undefined }
+      );
+      json(ctx.res, { result });
+    } catch (err) {
+      console.error("[voice] Transcription failed:", err);
+      json(ctx.res, { error: "Transcription failed" }, 500);
+    }
   });
 
   // Synthesize speech
@@ -67,17 +72,22 @@ export function registerVoiceRoutes(router: Router): void {
     if (!session) return notFound(ctx.res);
 
     const body = ctx.body as Record<string, unknown> | null;
-    if (!body?.text) {
+    if (!body?.["text"]) {
       json(ctx.res, { error: "'text' is required" }, 400);
       return;
     }
 
-    const result = await orchestrator.synthesize(ctx.params["id"]!, String(body.text));
-    // Return audio as base64
-    json(ctx.res, {
-      audio: result.audio.toString("base64"),
-      mimeType: result.mimeType,
-      provider: result.provider,
-    });
+    try {
+      const result = await orchestrator.synthesize(ctx.params["id"]!, String(body["text"]));
+      // Return audio as base64
+      json(ctx.res, {
+        audio: result.audio.toString("base64"),
+        mimeType: result.mimeType,
+        provider: result.provider,
+      });
+    } catch (err) {
+      console.error("[voice] Synthesis failed:", err);
+      json(ctx.res, { error: "Speech synthesis failed" }, 500);
+    }
   });
 }
