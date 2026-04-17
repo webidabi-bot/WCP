@@ -8,7 +8,7 @@
 
 import { execFile } from "child_process";
 import { promisify } from "util";
-import { createWriteStream, mkdirSync } from "fs";
+import { mkdirSync } from "fs";
 import { join } from "path";
 import { Gauge, Counter, registry } from "./metrics.js";
 

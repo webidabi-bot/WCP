@@ -35,7 +35,7 @@ function error(
 ): MCPResponse {
   return {
     jsonrpc: "2.0",
-    id: id ?? 0,
+    id: id ?? null,
     error: { code, message, data },
   };
 }

@@ -112,12 +112,13 @@ export class ToolRegistry {
 
     // Execute with timeout
     const timeoutMs = context?.timeout ?? 30_000;
-    const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timeoutHandle = setTimeout(
         () => reject(new Error(`Tool '${call.name}' timed out after ${timeoutMs}ms`)),
         timeoutMs
-      )
-    );
+      );
+    });
 
     try {
       const content = await Promise.race([
@@ -132,6 +133,8 @@ export class ToolRegistry {
         isError: true,
         content: [{ type: "text", text: message }],
       };
+    } finally {
+      clearTimeout(timeoutHandle);
     }
   }
 }

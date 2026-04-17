@@ -90,7 +90,7 @@ export interface MCPRequest {
 
 export interface MCPResponse<T = unknown> {
   jsonrpc: "2.0";
-  id: string | number;
+  id: string | number | null;
   result?: T;
   error?: MCPError;
 }

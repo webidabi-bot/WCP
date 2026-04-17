@@ -24,6 +24,8 @@ const MIGRATIONS: Migration[] = [
     version: 1,
     name: "create_schema_migrations",
     up: `
+      CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
       CREATE TABLE IF NOT EXISTS schema_migrations (
         version     BIGINT PRIMARY KEY,
         name        TEXT    NOT NULL,

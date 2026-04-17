@@ -66,6 +66,47 @@ async function postJSON<T>(
   });
 }
 
+async function getJSON<T>(
+  url: string,
+  headers: Record<string, string> = {},
+  timeoutMs = 60_000
+): Promise<T> {
+  const parsed = new URL(url);
+  const isHttps = parsed.protocol === "https:";
+  const transport = isHttps ? request : httpRequest;
+
+  return new Promise<T>((resolve, reject) => {
+    const req = transport(
+      {
+        hostname: parsed.hostname,
+        port: parsed.port || (isHttps ? 443 : 80),
+        path: parsed.pathname + parsed.search,
+        method: "GET",
+        headers,
+        timeout: timeoutMs,
+      },
+      (res) => {
+        let data = "";
+        res.on("data", (chunk) => (data += chunk));
+        res.on("end", () => {
+          try {
+            resolve(JSON.parse(data) as T);
+          } catch {
+            reject(new Error(`Invalid JSON response from ${url}: ${data}`));
+          }
+        });
+        res.on("error", reject);
+      }
+    );
+
+    req.on("timeout", () => {
+      req.destroy(new Error(`Request to ${url} timed out after ${timeoutMs}ms`));
+    });
+    req.on("error", reject);
+    req.end();
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Provider client
 // ---------------------------------------------------------------------------
@@ -172,9 +213,8 @@ export class InferenceProvider {
   async listModels(): Promise<string[]> {
     if (this.config.type === "ollama") {
       try {
-        const res = await postJSON<{ models: Array<{ name: string }> }>(
+        const res = await getJSON<{ models: Array<{ name: string }> }>(
           `${this.config.baseUrl}/api/tags`,
-          {},
           {},
           5_000
         );

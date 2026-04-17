@@ -6,11 +6,9 @@
  */
 
 import { Router, json } from "../router.js";
-import { createRegistry } from "@aios/mcp";
+import { ToolRegistry } from "@aios/mcp";
 
-const registry = createRegistry();
-
-export function registerToolRoutes(router: Router): void {
+export function registerToolRoutes(router: Router, registry: ToolRegistry): void {
   // List tools
   router.get("/api/tools", (ctx) => {
     json(ctx.res, { tools: registry.listTools() });

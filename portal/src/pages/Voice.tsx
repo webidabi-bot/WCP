@@ -33,8 +33,11 @@ export const Voice: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ language: "en" }),
       });
-      const data = await res.json() as { session: VoiceSession };
-      setSession(data.session);
+      const data = await res.json() as { session?: VoiceSession; error?: string };
+      if (!res.ok) {
+        throw new Error(data.error ?? `Request failed with status ${res.status}`);
+      }
+      setSession(data.session!);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -59,8 +62,11 @@ export const Voice: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ audio: fakeAudio }),
       });
-      const data = await res.json() as { result: { text: string } };
-      setTranscript(data.result.text);
+      const data = await res.json() as { result?: { text: string }; error?: string };
+      if (!res.ok) {
+        throw new Error(data.error ?? `Request failed with status ${res.status}`);
+      }
+      setTranscript(data.result!.text);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {

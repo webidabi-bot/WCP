@@ -28,12 +28,12 @@ async function main() {
   }
 
   // Start the Phoenix control-plane API
-  const app = createApp();
+  const mcpRegistry = createMCPRegistry();
+  const app = createApp({ registry: mcpRegistry });
   await app.start();
 
-  // Start the MCP tool server on a separate port
+  // Start the MCP tool server on a separate port (shares the same registry)
   const mcpPort = Number(process.env["MCP_PORT"] ?? 3001);
-  const mcpRegistry = createMCPRegistry();
   const mcpServer = new MCPServer({ port: mcpPort, registry: mcpRegistry });
   await mcpServer.start();
 

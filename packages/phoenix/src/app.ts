@@ -12,6 +12,7 @@ import { registerInferenceRoutes } from "./api/inference.js";
 import { registerToolRoutes } from "./api/tools.js";
 import { registerRecordRoutes } from "./api/records.js";
 import { registerVoiceRoutes } from "./api/voice.js";
+import { ToolRegistry, createRegistry } from "@aios/mcp";
 
 // ---------------------------------------------------------------------------
 // App
@@ -20,6 +21,7 @@ import { registerVoiceRoutes } from "./api/voice.js";
 export interface AppOptions {
   port?: number;
   host?: string;
+  registry?: ToolRegistry;
 }
 
 export class App {
@@ -37,7 +39,7 @@ export class App {
     registerHealthRoutes(this.router);
     registerAgentRoutes(this.router);
     registerInferenceRoutes(this.router);
-    registerToolRoutes(this.router);
+    registerToolRoutes(this.router, options.registry ?? createRegistry());
     registerRecordRoutes(this.router);
     registerVoiceRoutes(this.router);
   }

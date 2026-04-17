@@ -207,7 +207,7 @@ Builds all packages in dependency order, then the portal.
 - **Reusable templates** — Providers are pluggable (inference backends, STT/TTS). Registry pattern for tools.
 - **Operational clarity** — Every service emits structured logs. `/metrics` exposes Prometheus-format data. `/health` and `/ready` for orchestration.
 - **Boring reliable infrastructure** — Pure Node.js HTTP server (no external framework). PostgreSQL. pg_dump backups. No magic.
-- **Observable** — Prometheus metrics for HTTP requests, inference latency, backup success/failure.
+- **Observable** — Prometheus metrics for backup success/failure.
 - **Immutable audit trail** — Every tool invocation and governance decision is recorded.
 
 ## License

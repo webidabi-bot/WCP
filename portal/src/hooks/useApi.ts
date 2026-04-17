@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 export interface UseApiState<T> {
   data: T | null;
@@ -12,6 +12,8 @@ export function useApi<T>(fetcher: () => Promise<T>, deps: unknown[] = []): UseA
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
+  const fetcherRef = useRef(fetcher);
+  fetcherRef.current = fetcher;
 
   const refetch = useCallback(() => setTick((t) => t + 1), []);
 
@@ -20,7 +22,7 @@ export function useApi<T>(fetcher: () => Promise<T>, deps: unknown[] = []): UseA
     setLoading(true);
     setError(null);
 
-    fetcher()
+    fetcherRef.current()
       .then((result) => {
         if (!cancelled) {
           setData(result);
